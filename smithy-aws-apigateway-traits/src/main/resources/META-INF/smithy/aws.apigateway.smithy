@@ -27,15 +27,6 @@ structure apiKeyRequired {}
 @trait(selector: ":test(service, resource, operation)")
 string authorizer
 
-/// Defines the list of OAuth scopes required for an operation that uses a
-/// Cognito authorizer. Applied alongside the @authorizer trait.
-@internal
-@tags(["internal"])
-@trait(selector: "operation[trait|aws.apigateway#authorizer]")
-list authorizationScopes {
-    member: String
-}
-
 /// A list of API Gateway authorizers to augment the service's declared authentication
 /// mechanisms.
 @internal
@@ -128,6 +119,7 @@ structure integration {
 
     /// The ARN of an ALB or NLB listener for private integrations using
     /// VPC Links V2.
+    @suppress(["RepeatedShapeName"])
     integrationTarget: String
 }
 
@@ -191,6 +183,12 @@ structure endpointConfiguration {
     /// Whether clients can invoke the API using the default execute-api
     /// endpoint.
     disableExecuteApiEndpoint: Boolean
+
+    /// The IP address type that can invoke the API. Use `ipv4` to allow
+    /// only IPv4 addresses. Use `dualstack` to allow both IPv4 and IPv6
+    /// addresses. For the `PRIVATE` endpoint type, only `dualstack` is
+    /// supported.
+    ipAddressType: IpAddressType
 }
 
 /// Defines the minimum payload size in bytes at which compression is applied on an API Gateway REST API.
@@ -511,4 +509,15 @@ enum EndpointAccessMode {
 
     /// Strict endpoint access mode with additional governance checks.
     STRICT
+}
+
+/// The IP address type that can invoke an API Gateway REST API.
+@private
+enum IpAddressType {
+    /// Only IPv4 addresses can invoke the API.
+    IPV4 = "ipv4"
+
+    /// Both IPv4 and IPv6 addresses can invoke the API. Required for the
+    /// `PRIVATE` endpoint type.
+    DUAL_STACK = "dualstack"
 }
