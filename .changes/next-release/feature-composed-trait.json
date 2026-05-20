@@ -1,0 +1,5 @@
+{
+  "type": "feature",
+  "description": "Added `@composed` trait for trait aggregation, allowing higher-level traits to encapsulate sets of lower-level traits with member bindings",
+  "pull_requests": []
+}

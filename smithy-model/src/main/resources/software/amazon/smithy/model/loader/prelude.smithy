@@ -858,6 +858,22 @@ structure meta {}
 )
 structure deferrable {}
 
+/// Marks a trait definition as a composition of other traits. When applied
+/// to a shape, the traits on this definition are logically expanded onto
+/// the target. The bindings member maps composed-trait member names to
+/// inner trait member paths (format: "traitName/memberName").
+@trait(selector: "structure[trait|trait]")
+structure composed {
+    /// Maps composed trait member names to inner trait member paths.
+    bindings: ComposedBindings
+}
+
+@private
+map ComposedBindings {
+    key: String
+    value: String
+}
+
 /// Marks a list or map as sparse.
 @trait(
     selector: ":is(list, map)"
