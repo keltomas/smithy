@@ -991,6 +991,122 @@ after adding a member to the ``foo`` trait:
     string MyString4
 
 
+.. _meta-trait:
+
+.. smithy-trait:: smithy.api#meta
+
+``meta`` trait
+--------------
+
+Summary
+    Marks a trait as build-time tooling metadata. Traits marked ``@meta`` are
+    not processed by client codegen, SDKs, JSON Schema, or OpenAPI converters.
+    They exist solely for build plugins and deployment tooling.
+Trait selector
+    ``structure[trait|trait]``
+
+    A structure shape that has the :ref:`trait <trait-trait>` trait.
+Value type
+    Annotation trait
+
+The ``@meta`` trait signals to downstream consumers that a trait is build-time
+metadata and should be skipped by codegen, SDKs, and schema tools. This
+containment is what makes ``@deferrable`` safe — the type system hole is
+invisible to all downstream consumers.
+
+.. code-block:: smithy
+
+    @meta
+    @trait(selector: "operation")
+    structure alarm {
+        @required
+        metricName: String
+
+        @required
+        @deferrable
+        threshold: Integer
+    }
+
+
+.. _deferrable-trait:
+
+.. smithy-trait:: smithy.api#deferrable
+
+``deferrable`` trait
+--------------------
+
+Summary
+    Marks a trait member as accepting a deploy-time deferred value via
+    ``deferred("key")`` syntax. Valid only on members of traits that have
+    ``@meta`` applied.
+Trait selector
+    ``structure[trait|trait][trait|meta] > member``
+
+    A member of a structure that has both the :ref:`trait <trait-trait>` trait
+    and the :ref:`meta <meta-trait>` trait.
+Value type
+    Annotation trait
+
+The ``@deferrable`` trait marks members of ``@meta`` trait definitions as
+accepting deploy-time placeholder values. Deferrable members override
+``@required`` — they may be omitted or provided with a ``deferred("key")``
+value.
+
+.. code-block:: smithy
+
+    @meta
+    @trait(selector: "operation")
+    structure alarm {
+        @required
+        metricName: String
+
+        @required
+        @deferrable
+        threshold: Integer
+
+        @deferrable
+        period: Integer
+
+        evaluationPeriods: Integer
+    }
+
+Trait applications can use ``deferred("key")`` for ``@deferrable`` members:
+
+.. code-block:: smithy
+
+    @alarm(
+        metricName: "Latency"
+        threshold: deferred("billing.alarm.threshold")
+        period: deferred("billing.alarm.period")
+        evaluationPeriods: 3
+    )
+    operation DeferredValues {}
+
+The ``deferred("key")`` function desugars to ``"${key}"`` in the JSON AST.
+
+Validation behavior
+^^^^^^^^^^^^^^^^^^^
+
+When Smithy validates a trait value and encounters a ``@deferrable`` member
+within a ``@meta`` trait:
+
+* If the value matches the ``${...}`` placeholder syntax, all validation is
+  skipped — type checking, constraint traits (``@range``, ``@pattern``,
+  ``@length``), and custom validator plugins.
+* If the value does NOT match the placeholder syntax, normal validation
+  applies. Literal values on ``@deferrable`` members are still fully
+  validated.
+* If a ``@deferrable`` member is also ``@required``, it may be omitted
+  without error.
+
+Scope
+^^^^^
+
+``@deferrable`` can ONLY be applied to members of ``@meta`` trait-definition
+structures. It cannot be applied to members of API shapes such as operation
+inputs, outputs, or error structures.
+
+
 .. _trait-breaking-change-rules:
 
 Breaking change rules

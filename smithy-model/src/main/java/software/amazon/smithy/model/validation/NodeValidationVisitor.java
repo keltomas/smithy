@@ -46,6 +46,7 @@ import software.amazon.smithy.model.shapes.StringShape;
 import software.amazon.smithy.model.shapes.StructureShape;
 import software.amazon.smithy.model.shapes.TimestampShape;
 import software.amazon.smithy.model.shapes.UnionShape;
+import software.amazon.smithy.model.traits.DeferrableTrait;
 import software.amazon.smithy.model.validation.node.NodeValidatorPlugin;
 import software.amazon.smithy.model.validation.node.TimestampValidationStrategy;
 import software.amazon.smithy.utils.ListUtils;
@@ -408,10 +409,18 @@ public final class NodeValidationVisitor implements ShapeVisitor<List<Validation
 
     @Override
     public List<ValidationEvent> memberShape(MemberShape shape) {
-        List<ValidationEvent> events = applyPlugins(shape);
         if (value.isNullNode()) {
-            events.addAll(checkNullMember(shape));
+            return checkNullMember(shape);
         }
+
+        // @deferrable members within @meta traits accept ${...} placeholder
+        // strings in place of their declared type. Skip all validation for
+        // deferred placeholder values.
+        if (shape.hasTrait(DeferrableTrait.class) && DeferrableTrait.isPlaceholder(value)) {
+            return Collections.emptyList();
+        }
+
+        List<ValidationEvent> events = applyPlugins(shape);
         model.getShape(shape.getTarget()).ifPresent(target -> {
             // We only need to keep track of a single referring member, so a stack of members or anything like that
             // isn't needed here.

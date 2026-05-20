@@ -1,0 +1,5 @@
+{
+  "type": "feature",
+  "description": "Added `@meta` trait for marking traits as build-time tooling metadata, and `@deferrable` trait for marking trait members that accept deploy-time deferred values via `deferred(\"key\")` syntax",
+  "pull_requests": []
+}

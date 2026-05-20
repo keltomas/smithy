@@ -840,6 +840,24 @@ structure recommended {
     reason: String
 }
 
+/// Marks a trait as build-time tooling metadata. Traits marked @meta are
+/// not processed by client codegen, SDKs, JSON Schema, or OpenAPI converters.
+/// They exist solely for build plugins and deployment tooling.
+@trait(selector: "structure[trait|trait]")
+structure meta {}
+
+/// Marks a trait member as accepting a deploy-time deferred value via
+/// deferred("key") syntax. Valid only on members of traits that have
+/// @meta applied. Deferrable members override @required — they may be
+/// omitted or provided with a deferred("key") value.
+@trait(
+    selector: "structure[trait|trait][trait|meta] > member"
+    breakingChanges: [
+        {change: "remove"}
+    ]
+)
+structure deferrable {}
+
 /// Marks a list or map as sparse.
 @trait(
     selector: ":is(list, map)"

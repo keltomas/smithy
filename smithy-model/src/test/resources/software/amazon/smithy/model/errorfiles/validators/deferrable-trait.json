@@ -1,0 +1,52 @@
+{
+    "smithy": "2.0",
+    "shapes": {
+        "ns.foo#myTrait": {
+            "type": "structure",
+            "members": {
+                "count": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#deferrable": {}
+                    }
+                },
+                "name": {
+                    "target": "smithy.api#String"
+                }
+            },
+            "traits": {
+                "smithy.api#meta": {},
+                "smithy.api#trait": {
+                    "selector": "string"
+                }
+            }
+        },
+        "ns.foo#String1": {
+            "type": "string",
+            "traits": {
+                "ns.foo#myTrait": {
+                    "count": "not-a-placeholder",
+                    "name": "valid"
+                }
+            }
+        },
+        "ns.foo#String2": {
+            "type": "string",
+            "traits": {
+                "ns.foo#myTrait": {
+                    "count": "${valid.placeholder}",
+                    "name": "valid"
+                }
+            }
+        },
+        "ns.foo#String3": {
+            "type": "string",
+            "traits": {
+                "ns.foo#myTrait": {
+                    "count": "prefix${not.valid}suffix",
+                    "name": "valid"
+                }
+            }
+        }
+    }
+}

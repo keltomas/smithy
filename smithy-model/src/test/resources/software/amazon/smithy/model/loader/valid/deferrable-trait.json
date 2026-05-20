@@ -1,0 +1,72 @@
+{
+    "smithy": "2.0",
+    "shapes": {
+        "smithy.example#alarm": {
+            "type": "structure",
+            "members": {
+                "metricName": {
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "threshold": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#required": {},
+                        "smithy.api#deferrable": {}
+                    }
+                },
+                "period": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#deferrable": {}
+                    }
+                },
+                "evaluationPeriods": {
+                    "target": "smithy.api#Integer"
+                }
+            },
+            "traits": {
+                "smithy.api#meta": {},
+                "smithy.api#trait": {
+                    "selector": "operation"
+                },
+                "smithy.api#documentation": "A meta trait with deferrable members that accept deferred values."
+            }
+        },
+        "smithy.example#LiteralValues": {
+            "type": "operation",
+            "traits": {
+                "smithy.example#alarm": {
+                    "metricName": "Latency",
+                    "threshold": 200,
+                    "period": 300,
+                    "evaluationPeriods": 3
+                }
+            }
+        },
+        "smithy.example#DeferredValues": {
+            "type": "operation",
+            "traits": {
+                "smithy.example#alarm": {
+                    "metricName": "Latency",
+                    "threshold": "${billing.alarm.threshold}",
+                    "period": "${billing.alarm.period}",
+                    "evaluationPeriods": 3
+                }
+            }
+        },
+        "smithy.example#MixedValues": {
+            "type": "operation",
+            "traits": {
+                "smithy.example#alarm": {
+                    "metricName": "Latency",
+                    "threshold": 500,
+                    "period": "${billing.alarm.period}",
+                    "evaluationPeriods": 3
+                }
+            }
+        }
+    }
+}

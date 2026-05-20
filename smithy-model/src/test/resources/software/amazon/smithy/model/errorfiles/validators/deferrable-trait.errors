@@ -1,0 +1,2 @@
+[ERROR] ns.foo#String1: Error validating trait `ns.foo#myTrait`.count: Expected number value for integer shape, `smithy.api#Integer`; found string value, `not-a-placeholder` | TraitValue
+[ERROR] ns.foo#String3: Error validating trait `ns.foo#myTrait`.count: Expected number value for integer shape, `smithy.api#Integer`; found string value, `prefix${not.valid}suffix` | TraitValue

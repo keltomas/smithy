@@ -6,6 +6,7 @@ software.amazon.smithy.model.traits.CorsTrait$Provider
 software.amazon.smithy.model.traits.DefaultTrait$Provider
 software.amazon.smithy.model.traits.DeprecatedTrait$Provider
 software.amazon.smithy.model.traits.DocumentationTrait$Provider
+software.amazon.smithy.model.traits.DeferrableTrait$Provider
 software.amazon.smithy.model.traits.EndpointTrait$Provider
 software.amazon.smithy.model.traits.EnumTrait$Provider
 software.amazon.smithy.model.traits.EnumValueTrait$Provider
@@ -40,6 +41,7 @@ software.amazon.smithy.model.traits.LongPollTrait$Provider
 software.amazon.smithy.model.traits.MediaTypeTrait$Provider
 software.amazon.smithy.model.traits.MixinTrait$Provider
 software.amazon.smithy.model.traits.NestedPropertiesTrait$Provider
+software.amazon.smithy.model.traits.MetaTrait$Provider
 software.amazon.smithy.model.traits.NoReplaceTrait$Provider
 software.amazon.smithy.model.traits.ClientOptionalTrait$Provider
 software.amazon.smithy.model.traits.OptionalAuthTrait$Provider
